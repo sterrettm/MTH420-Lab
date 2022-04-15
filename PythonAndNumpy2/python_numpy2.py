@@ -5,31 +5,39 @@
 <Date>
 """
 
+import numpy as np
+
 #Problem 1
 def isolate(a, b, c, d, e):
-
-    raise NotImplementedError("Problem 1 Incomplete")
+    print(a,b,c,sep = '     ', end=' ')
+    print(d,e)
 
 #Problem 2
 def first_half(string):
-
-    raise NotImplementedError("Problem 2 Incomplete")
+    return string[0:len(string) // 2]
 
 
 def backward(first_string):
-
-    raise NotImplementedError("Problem 2 Incomplete")
+    return first_string[::-1]
 
 #Problem 3
 def list_ops():
-
-    raise NotImplementedError("Problem 3 Incomplete")
+    animals = ["bear", "ant", "cat", "dog"]
+    animals.append("eagle")
+    animals[2] = "fox"
+    animals.pop(1)
+    animals[animals.index("eagle")] = "hawk"
+    animals[-1] = animals[-1] + "hunter"
+    return animals
 
 #Problem 4
 def alt_harmonic(n):
     """Return the partial sum of the first n terms of the alternating
     harmonic series. Use this function to approximate ln(2).
     """
+
+    return sum([(1/(i+1) * (-1) ** i) for i in range(0,n)])
+
     raise NotImplementedError("Problem 4 Incomplete")
 
 
@@ -43,7 +51,8 @@ def prob5(A):
         >>> prob4(A)
         array([0, 0, 3])
     """
-    raise NotImplementedError("Problem 5 Incomplete")
+
+    return A.copy() + (-1 * A) * (A < 0)
 
 def prob6():
     """Define the matrices A, B, and C as arrays. Return the block matrix
@@ -53,7 +62,18 @@ def prob6():
     where I is the 3x3 identity matrix and each 0 is a matrix of all zeros
     of the appropriate size.
     """
-    raise NotImplementedError("Problem 6 Incomplete")
+    
+    A = np.array([[0,2,4],[1,3,5]])
+    B = np.array([[3,0,0],[3,3,0],[3,3,3]])
+    C = np.array([[-2,0,0], [0, -2, 0], [0, 0, -2]])
+
+    row1 = np.hstack((np.zeros((3,3)), np.transpose(A), np.identity(3)))
+    row2 = np.hstack((A, np.zeros((2,2)), np.zeros((2,3))))
+    row3 = np.hstack((B, np.zeros((3,2)), C))
+
+    result = np.vstack((row1, row2, row3))
+
+    return result
 
 def prob7(A):
     """Divide each row of 'A' by the row sum and return the resulting array.
