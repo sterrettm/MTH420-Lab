@@ -38,8 +38,6 @@ def alt_harmonic(n):
 
     return sum([(1/(i+1) * (-1) ** i) for i in range(0,n)])
 
-    raise NotImplementedError("Problem 4 Incomplete")
-
 
 
 def prob5(A):
@@ -93,6 +91,14 @@ def prob8():
     adjacent numbers in the same direction (up, down, left, right, or
     diagonally) in the grid.
     """
-    raise NotImplementedError("Problem 8 Incomplete")
+    
+    grid = np.load("grid.npy")
+
+    rightMax = np.max(grid[:,:-3] * grid[:,1:-2] * grid[:,2:-1] * grid[:,3:])
+    vertMax = np.max(grid[:-3,:] * grid[1:-2,:] * grid[2:-1,:] * grid[3:,:])
+    rightDiagMax = np.max(grid[:-3,:-3] * grid[1:-2, 1:-2] * grid[2:-1,2:-1] * grid[3:, 3:])
+    leftDiagMax = np.max(grid[:-3,3:] * grid[1:-2, 2:-1] * grid[2:-1, 1:-2] * grid[3:, :-3])
+
+    return rightMax, vertMax, rightDiagMax, leftDiagMax
 
 
