@@ -142,12 +142,8 @@ def prob6():
     x = np.linspace(-2*np.pi, 2*np.pi, 200)
     y = x.copy()
     X, Y = np.meshgrid(x,y)
-    Z = (np.sin(X) * np.sin(Y)) / (x * y)
+    Z = (np.sin(X) * np.sin(Y)) / (X * Y)
 
-    print(X)
-    print(Y)
-
-    #fig, (ax1, ax2) = plt.subplots(2)
     plt.axis([-2*np.pi, 2*np.pi, -2*np.pi, 2*np.pi])
 
     plt.subplot(121)
@@ -155,9 +151,7 @@ def prob6():
     plt.colorbar()
     
     plt.subplot(122)
-    plt.contourf(X,Y,Z, 10, cmap='magma')
+    plt.contour(X,Y,Z, 10, cmap='coolwarm')
     plt.colorbar()
 
     plt.show()
-
-    raise NotImplementedError("Problem 6 Incomplete")
