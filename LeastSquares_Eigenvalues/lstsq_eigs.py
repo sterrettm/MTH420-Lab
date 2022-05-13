@@ -12,7 +12,7 @@
 
 import numpy as np
 from matplotlib import pyplot as plt
-
+from scipy import linalg
 
 # Problem 1
 def least_squares(A, b):
@@ -26,7 +26,15 @@ def least_squares(A, b):
     Returns:
         x ((n, ) ndarray): The solution to the normal equations.
     """
-    raise NotImplementedError("Problem 1 Incomplete")
+    
+    Q, R = linalg.qr(A, mode="economic")
+
+    A2 = R
+    b2 = np.matmul(np.transpose(Q), b)
+
+    x = linalg.solve_triangular(A2, b2)
+    
+    return x
 
 # Problem 2
 def line_fit():
@@ -34,7 +42,22 @@ def line_fit():
     index for the data in housing.npy. Plot both the data points and the least
     squares line.
     """
-    raise NotImplementedError("Problem 2 Incomplete")
+    data = np.load("housing.npy")
+
+    Xraw = data[:,0][np.newaxis].T
+    Y = data[:,1][np.newaxis].T
+    X = np.hstack((Xraw, np.ones_like(Xraw)))
+    
+    params = least_squares(X,Y) 
+
+    Xmax = np.amax(Xraw)
+    
+    X_line = np.arange(0,Xmax + 0.1,0.5)
+    Y_line = X_line * params[0] + params[1]
+
+    plt.scatter(Xraw.flatten(), Y.flatten())
+    plt.plot(X_line, Y_line)
+    plt.show()
 
 
 # Problem 3
@@ -43,7 +66,51 @@ def polynomial_fit():
     the year to the housing price index for the data in housing.npy. Plot both
     the data points and the least squares polynomials in individual subplots.
     """
-    raise NotImplementedError("Problem 3 Incomplete")
+    
+    data=np.load("housing.npy")
+    Xraw = data[:,0][np.newaxis].T
+    Y = data[:,1][np.newaxis].T
+
+    # Build up A for
+    A3 = np.ones_like(Xraw)
+
+    for i in range(1, 4):
+       A3 = np.hstack((np.power(Xraw, i), A3))
+
+    A6 = np.ones_like(Xraw)
+    for i in range(1, 7):
+       A6 = np.hstack((np.power(Xraw, i), A6))
+
+    A9 = np.ones_like(Xraw)
+    for i in range(1, 10):
+       A9 = np.hstack((np.power(Xraw, i), A9))
+
+    A12 = np.ones_like(Xraw)
+    for i in range(1, 13):
+       A12 = np.hstack((np.power(Xraw, i), A12))
+
+    X3 = least_squares(A3, Y)
+    X6 = least_squares(A6, Y)
+    X9 = least_squares(A9, Y)
+    X12 = least_squares(A12, Y)
+
+    Reg3 = A3 @ X3
+    Reg6 = A6 @ X6
+    Reg9 = A9 @ X9
+    Reg12 = A12 @ X12
+
+    plt.plot(Xraw.flatten(), Reg3)
+    plt.plot(Xraw.flatten(), Reg6)
+    plt.plot(Xraw.flatten(), Reg9)
+    plt.plot(Xraw.flatten(), Reg12)
+
+    # Compare polyfit results to our results
+    poly3 = np.polyfit(Xraw.flatten(), Y.flatten(), 3)[np.newaxis].T
+    print(poly3)
+    print(X3)
+
+    plt.scatter(Xraw.flatten(), Y.flatten())
+    plt.show()
 
 
 def plot_ellipse(a, b, c, d, e):
