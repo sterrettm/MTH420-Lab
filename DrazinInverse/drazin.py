@@ -76,13 +76,13 @@ def drazin_inverse(A, tol=1e-4):
 
     U = np.hstack((Q1[:, :k1], Q2[:, :n-k1]))
 
-    Uinv = np.linalg.inv(U)
+    Uinv = la.inv(U)
 
     V = Uinv @ A @ U
-    Z = np.zeros_like(A)
+    Z = np.zeros_like(A, dtype=float)
 
     if (k1 != 0):
-        Minv = np.linalg.inv(V[:k1, :k1])
+        Minv = la.inv(V[:k1, :k1])
         Z[:k1, :k1] = Minv
 
     return U @ Z @ Uinv
@@ -113,9 +113,8 @@ def effective_resistance(A):
 
     L = laplacian(A)
     assert np.allclose(L,L.T), "Laplacian is not symmetric?"
-    print(L)
 
-    R = np.zeros_like(A)
+    R = np.zeros_like(A, dtype=float)
 
     for i in range(0, n):
         for j in range(0, n):
@@ -123,10 +122,9 @@ def effective_resistance(A):
                 Lj = L.copy()
                 Lj[j] = I[j]
                 LjD = drazin_inverse(Lj)
-                print(LjD)
+                assert is_drazin(Lj, LjD, index(Lj)), "Drazin inverse incorrect?"
                 R[i,j] = LjD[i,i]
 
-    print(R)
     assert np.allclose(R, R.T), "R is not symmetric"
     return R
 
