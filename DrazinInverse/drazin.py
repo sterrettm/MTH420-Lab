@@ -7,7 +7,7 @@
 
 import numpy as np
 from scipy import linalg as la
-
+from scipy.sparse import csgraph as csgraph
 
 # Helper function for problems 1 and 2.
 def index(A, tol=1e-5):
@@ -87,6 +87,11 @@ def drazin_inverse(A, tol=1e-4):
 
     return U @ Z @ Uinv
 
+def laplacian(A):
+    D = A.sum(axis = 1)
+    L =  np.diag(D) - A
+    assert np.allclose(L, csgraph.laplacian(A))
+    return L
 
 # Problem 3
 def effective_resistance(A):
@@ -99,7 +104,31 @@ def effective_resistance(A):
         ((n,n) ndarray) The matrix where the ijth entry is the effective
         resistance from node i to node j.
     """
-    raise NotImplementedError("Problem 3 Incomplete")
+
+    assert np.allclose(A,A.T), "Adjacency matrix is not symmetric"
+
+    n = A.shape[0]
+
+    I = np.identity(n)
+
+    L = laplacian(A)
+    assert np.allclose(L,L.T), "Laplacian is not symmetric?"
+    print(L)
+
+    R = np.zeros_like(A)
+
+    for i in range(0, n):
+        for j in range(0, n):
+            if (i != j):
+                Lj = L.copy()
+                Lj[j] = I[j]
+                LjD = drazin_inverse(Lj)
+                print(LjD)
+                R[i,j] = LjD[i,i]
+
+    print(R)
+    assert np.allclose(R, R.T), "R is not symmetric"
+    return R
 
 
 # Problems 4 and 5
