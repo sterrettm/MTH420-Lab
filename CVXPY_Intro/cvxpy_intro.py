@@ -52,7 +52,7 @@ def l1Min(A, b):
         The optimizer x (ndarray)
         The optimal value (float)
     """
-    print(A.shape)
+
     x = cp.Variable(A.shape[1])
 
     objective = cp.Minimize(cp.norm(x, 1))
@@ -77,7 +77,6 @@ def prob3():
     A = np.array([[4,7,6,8,8,9]])
     EQA   = np.array([[1,1,0,0,0,0],[0,0,1,1,0,0],[0,0,0,0,1,1],[1,0,1,0,1,0],[0,1,0,1,0,1]])
     EQb   = np.array([7,2,4,5,8])
-    #INEQ = np.array([]) 
 
     objective = cp.Minimize(A @ p)
     constraint = [EQA @ p == EQb]
@@ -134,8 +133,6 @@ def prob5(A, b):
 
     result = problem.solve()
     return x.value, result
-
-    raise NotImplementedError("Problem 5 Incomplete")
 
 
 # Problem 6
