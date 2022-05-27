@@ -5,6 +5,8 @@
 <Date>
 """
 
+import cvxpy as cp
+import numpy as np
 
 def prob1():
     """Solve the following convex optimization problem:
@@ -21,7 +23,18 @@ def prob1():
         The optimizer x (ndarray)
         The optimal value (float)
     """
-    raise NotImplementedError("Problem 1 Incomplete")
+
+    x = cp.Variable(3, nonneg = True)
+    A = np.array([[2,1,3]])
+    B = np.array([[-1,-2,0],[0,-2,4],[2,10,3]])
+    C = np.array([-3,-1,12])
+
+    objective = cp.Minimize(A @ x)
+    constraints = [B @ x >= C]
+    problem = cp.Problem(objective, constraints)
+
+    result = problem.solve()
+    return x.value, result
 
 
 # Problem 2
@@ -39,7 +52,15 @@ def l1Min(A, b):
         The optimizer x (ndarray)
         The optimal value (float)
     """
-    raise NotImplementedError("Problem 2 Incomplete")
+    print(A.shape)
+    x = cp.Variable(A.shape[1])
+
+    objective = cp.Minimize(cp.norm(x, 1))
+    constraint = [A @ x == b]
+
+    problem = cp.Problem(objective, constraint)
+    result = problem.solve()
+    return x.value, result
 
 
 # Problem 3
@@ -51,7 +72,20 @@ def prob3():
         The optimizer x (ndarray)
         The optimal value (float)
     """
-    raise NotImplementedError("Problem 3 Incomplete")
+
+    p = cp.Variable(6, nonneg=True)
+    A = np.array([[4,7,6,8,8,9]])
+    EQA   = np.array([[1,1,0,0,0,0],[0,0,1,1,0,0],[0,0,0,0,1,1],[1,0,1,0,1,0],[0,1,0,1,0,1]])
+    EQb   = np.array([7,2,4,5,8])
+    #INEQ = np.array([]) 
+
+    objective = cp.Minimize(A @ p)
+    constraint = [EQA @ p == EQb]
+
+    problem = cp.Problem(objective, constraint)
+
+    result = problem.solve()
+    return p.value, result
 
 
 # Problem 4
@@ -64,7 +98,16 @@ def prob4():
         The optimizer x (ndarray)
         The optimal value (float)
     """
-    raise NotImplementedError("Problem 4 Incomplete")
+    Q = np.array([[3,2,1],[2,4,2],[1,2,3]])
+    r = np.array([[3],[0],[1]])
+
+    x = cp.Variable(3)
+    objective = cp.Minimize(1/2 * cp.quad_form(x, Q) + r.T @ x)
+
+    problem = cp.Problem(objective)
+
+    result = problem.solve()
+    return x.value, result
 
 
 # Problem 5
@@ -81,6 +124,17 @@ def prob5(A, b):
         The optimizer x (ndarray)
         The optimal value (float)
     """
+
+    x = cp.Variable(A.shape[1], nonneg = True)
+
+    objective = cp.Minimize(cp.norm(A @ x - b))
+    constraint = [cp.sum(x) == 1]
+
+    problem = cp.Problem(objective, constraint)
+
+    result = problem.solve()
+    return x.value, result
+
     raise NotImplementedError("Problem 5 Incomplete")
 
 
