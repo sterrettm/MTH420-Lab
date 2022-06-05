@@ -5,6 +5,8 @@
 <Date>
 """
 
+import numpy as np
+from matplotlib import pyplot as plt
 
 # Problems 1, 3, and 5
 def newton(f, x0, Df, tol=1e-5, maxiter=15, alpha=1.):
@@ -24,7 +26,22 @@ def newton(f, x0, Df, tol=1e-5, maxiter=15, alpha=1.):
         (bool): Whether or not Newton's method converged.
         (int): The number of iterations computed.
     """
-    raise NotImplementedError("Problem 1 Incomplete")
+    
+    x = x0
+    i = 0
+    while (i < maxiter):
+        if (np.isscalar(x)):
+            x -= alpha * f(x) / Df(x)
+            if (abs(f(x)) <= tol):
+                break
+            
+        else:
+            x = x - alpha * np.linalg.inv(Df(x)) @ f(x)
+            if (np.linalg.norm(x) <= tol):
+                break
+        i += 1
+    
+    return x
 
 
 # Problem 2
@@ -46,7 +63,13 @@ def prob2(N1, N2, P1, P2):
     Returns:
         (float): the value of r that satisfies the equation.
     """
-    raise NotImplementedError("Problem 2 Incomplete")
+    
+    f =  lambda r : (P1 * ((1 + r) ** N1 - 1) - P2 * (1 - (1+r) ** (-N2)))
+    Df = lambda r : (P1 * N1 * (1 + r) ** (N1 - 1) - P2 * N2 * (1 + r) ** (-N2 - 1)) 
+    
+    r = newton(f,0.1,Df)
+    
+    return r
 
 
 # Problem 4
@@ -66,7 +89,26 @@ def optimal_alpha(f, x0, Df, tol=1e-5, maxiter=15):
         (float): a value for alpha that results in the lowest number of
             iterations.
     """
-    raise NotImplementedError("Problem 4 Incomplete")
+    
+    index = 0
+    results = np.zeros((100))
+    X = np.arange(0.1,1.1,0.01)
+    
+    for alpha in X:
+        x = x0
+        
+        iters = 0
+        while (iters < maxiter):
+            x -= alpha * f(x) / Df(x)
+            if (abs(f(x)) <= tol):
+                break
+            iters += 1
+        
+        results[index] = iters
+        index += 1
+    
+    plt.plot(X, results)
+    plt.show()
 
 
 # Problem 6
@@ -80,7 +122,27 @@ def prob6():
     (0,1) or (0,−1) with alpha = 1, and to (3.75, .25) with alpha = 0.55.
     Return the intial point as a 1-D NumPy array with 2 entries.
     """
-    raise NotImplementedError("Problem 6 Incomplete")
+    
+    gamma = 5
+    delta = 1
+    
+    tolerance = 1e-3
+    maxiters = 15
+    alpha = 0.5
+    
+    f  = lambda x : np.array([(gamma - 1) * x[0] * x[1] - x[0], delta + (delta - 1) * x[1] - x[0] * x[1] - x[1] * x[1]])
+    Df = lambda x : np.array([[(gamma - 1) * x[1] - 1, (gamma  - 1) * x[0]], [-x[1], -x[0] + delta - 1 - 2*x[1]]])
+    
+    while True:
+        x0 = np.random.uniform(low=-0.25, high=0)
+        y0 = np.random.uniform(low=0, high=0.25)
+        X0 = np.array([x0, y0])
+        
+        X1 = newton(f, X0, Df, tolerance, maxiters, 1)
+        X2 = newton(f, X0, Df, tolerance, maxiters, 0.55)
+        
+        if (np.allclose(X1, np.array([0,1])) or np.allclose(X1, np.array([0,-1]))) and np.allclose(X2, np.array([3.75, 0.25])):
+            return X0
 
 
 # Problem 7
@@ -97,4 +159,19 @@ def plot_basins(f, Df, zeros, domain, res=1000, iters=15):
             The visualized grid has shape (res, res).
         iters (int): The exact number of times to iterate Newton's method.
     """
-    raise NotImplementedError("Problem 7 Incomplete")
+    
+    x_real = np.linspace(domain[0], domain[1], res) # Real parts.
+    x_imag = np.linspace(domain[2], domain[3], res) # Imaginary parts.
+    X_real, X_imag = np.meshgrid(x_real, x_imag)
+    X_0 = X_real + 1j*X_imag 
+    
+    X = X_0
+    
+    for iter in range(0, iters):
+        X = X - f(X) / Df(X)
+    
+    Y = np.zeros_like(X)
+    Y = np.argmin(np.abs(np.repeat(X[:,:,np.newaxis], len(zeros), axis=2) - zeros), axis=2)
+    
+    plt.pcolormesh(np.real(X_0), np.imag(X_0), Y, cmap="brg")
+    plt.show()
