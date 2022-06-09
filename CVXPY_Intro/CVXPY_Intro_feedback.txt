@@ -1,0 +1,32 @@
+06/09/22 20:09
+
+Problem 1 (5 points):
+Incorrect optimizer
+	Correct response: [0.    1.186 0.047]
+	Student response: [0.    1.109 0.304]
+Incorrect optimial value
+	Correct response: 1.3255813953521967
+	Student response: 2.0217391303701198
+Score += 0
+
+Problem 2 (5 points):
+Score += 5
+
+Problem 3 (5 points):
+Score += 5
+
+Problem 4 (5 points):
+Score += 5
+
+Problem 5 (10 points):
+Score += 10
+
+Code Quality (20 points):
+Score += 20
+
+Total score: 45/50 = 90.0%
+
+Great job!
+
+-------------------------------------------------------------------------------
+
