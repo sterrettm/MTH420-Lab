@@ -41,7 +41,7 @@ def newton(f, x0, Df, tol=1e-5, maxiter=15, alpha=1.):
                 break
         i += 1
     
-    return x
+    return x, False, maxiter
 
 
 # Problem 2
@@ -67,7 +67,7 @@ def prob2(N1, N2, P1, P2):
     f =  lambda r : (P1 * ((1 + r) ** N1 - 1) - P2 * (1 - (1+r) ** (-N2)))
     Df = lambda r : (P1 * N1 * (1 + r) ** (N1 - 1) - P2 * N2 * (1 + r) ** (-N2 - 1)) 
     
-    r = newton(f,0.1,Df)
+    r = newton(f,0.1,Df)[0]
     
     return r
 
@@ -109,7 +109,7 @@ def optimal_alpha(f, x0, Df, tol=1e-5, maxiter=15):
     
     plt.plot(X, results)
     plt.show()
-
+    return alpha
 
 # Problem 6
 def prob6():
@@ -143,7 +143,7 @@ def prob6():
         
         if (np.allclose(X1, np.array([0,1])) or np.allclose(X1, np.array([0,-1]))) and np.allclose(X2, np.array([3.75, 0.25])):
             return X0
-
+   
 
 # Problem 7
 def plot_basins(f, Df, zeros, domain, res=1000, iters=15):
